@@ -3,191 +3,377 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NovaStore — High-Performance E-Commerce (Aura Feature Flag Demo)</title>
+  <title>NovaStore — Precision Hardware & Peripherals for Builders</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body class="dark">
 
-  <!-- 1. Aura Feature Flag: Announcement Banner -->
-  <div id="announcement-banner">
-    <span>🔥 <strong>FLASH SALE:</strong> 50% Off Developer Gear with code <code>AURA50</code> — Limited Time!</span>
-    <span style="opacity: 0.8; font-size: 0.75rem;">(Flag: announcement-banner)</span>
+  <!-- 1. Promotional Sale Banner (Flag: announcement-banner) -->
+  <div id="announcement-banner" class="announcement-bar">
+    <div class="announcement-content">
+      <span class="announcement-tag">SPRING EVENT</span>
+      <span class="announcement-text">20% off all developer hardware & workspace peripherals with code <strong>BUILD20</strong> — Complimentary global express delivery.</span>
+    </div>
   </div>
 
-  <!-- 2. Aura Live Control Header Bar -->
-  <header class="aura-sync-bar">
-    <div class="aura-sync-left">
-      <div id="aura-connection-badge" class="aura-badge">
-        <span class="pulse-dot"></span>
-        <span id="aura-connection-text">SSE Stream Active (&lt;15ms)</span>
+  <!-- 2. Storefront Navbar -->
+  <header class="store-header">
+    <div class="header-inner">
+      <a href="#" class="brand-logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <div class="logo-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <span class="brand-name">NovaStore</span>
+          <span class="brand-tagline">Precision Hardware</span>
+        </div>
+      </a>
+
+      <!-- Category Navigation Links -->
+      <nav class="nav-links">
+        <button class="nav-link active" onclick="window.filterCategory('all', this)">All Hardware</button>
+        <button class="nav-link" onclick="window.filterCategory('Keyboards & Input', this)">Keyboards</button>
+        <button class="nav-link" onclick="window.filterCategory('Displays', this)">Displays</button>
+        <button class="nav-link" onclick="window.filterCategory('Audio', this)">Audio</button>
+        <button class="nav-link" onclick="window.filterCategory('Desk Accessories', this)">Workspace</button>
+      </nav>
+
+      <!-- Right Actions: Search, User Account, Cart -->
+      <div class="header-actions">
+        <!-- Quick Search -->
+        <div class="search-box">
+          <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="product-search-input" placeholder="Search catalog..." oninput="window.handleSearch(this.value)">
+          <span class="search-kbd">⌘K</span>
+        </div>
+
+        <!-- 1-Click User Account Pill -->
+        <button id="nav-user-btn" class="user-pill-btn" onclick="window.openLoginModal()" title="Switch User Account">
+          <span id="user-avatar-initials" class="avatar-circle">BC</span>
+          <div class="user-pill-details">
+            <span id="user-display-name" class="user-name">Bob Chen</span>
+            <span id="user-role-badge" class="user-role">Enterprise</span>
+          </div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        <!-- Shopping Cart Button -->
+        <button id="nav-cart-btn" class="cart-trigger-btn" onclick="window.openCart()" aria-label="Open Cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="cart-label">Bag</span>
+          <span id="cart-count" class="cart-badge">1</span>
+        </button>
       </div>
-      <span style="color: var(--text-muted); font-size: 0.75rem;">Project: <strong>Aura Platform Core</strong></span>
-    </div>
-
-    <div class="aura-sync-right">
-      <label for="aura-target-backend" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">Backend:</label>
-      <select id="aura-target-backend" class="env-select">
-        <option value="cloud" selected>Cloud (Render Live)</option>
-        <option value="local">Local (localhost:8080)</option>
-      </select>
-
-      <label for="aura-user-select" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">User Context:</label>
-      <select id="aura-user-select" class="env-select">
-        <option value="alice">Alice (usr_alice · @aura.dev)</option>
-        <option value="bob">Bob (usr_bob · @company.com)</option>
-        <option value="charlie">Charlie (usr_charlie · beta_user)</option>
-        <option value="anonymous">Anonymous Visitor</option>
-      </select>
-
-      <label for="aura-env-select" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">Environment:</label>
-      <select id="aura-env-select" class="env-select">
-        <option value="development">Development</option>
-        <option value="staging">Staging</option>
-        <option value="production">Production</option>
-      </select>
-      <button id="btn-manual-sync" class="btn-sync-refresh" title="Force re-evaluate flags">
-        <span>🔄 Sync</span>
-      </button>
     </div>
   </header>
 
-  <!-- 3. Store Navigation Bar -->
-  <nav class="navbar">
-    <a href="#" class="nav-brand">
-      <div class="brand-logo-icon">⚡</div>
-      <div class="brand-text">
-        <h1 class="brand-font">NovaStore</h1>
-        <span>Powered by Aura Remote Config</span>
+  <!-- 3. Storefront Hero Section -->
+  <section class="store-hero">
+    <div class="hero-container">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        <span>ENGINEERED ARCHITECTURE 2026</span>
       </div>
-    </a>
+      <h1 class="hero-title">Precision Hardware for Modern Builders</h1>
+      <p class="hero-subtitle">
+        Tactile ortholinear mechanical keyboards, calibrated 4K OLED developer displays, and machined workspace equipment built for continuous focus.
+      </p>
 
-    <div class="nav-actions">
-      <button class="cart-btn" onclick="window.openCart()">
-        <span>🛒 Cart</span>
-        <span id="cart-count" class="cart-count">1</span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- 4. Hero Section -->
-  <section class="hero">
-    <div class="hero-pill">
-      <span>✨ Client Demonstration Application</span>
-    </div>
-    <h2>Modern Hardware for Engineers</h2>
-    <p>
-      This live store is wired to Aura's Feature Flag Evaluation API. Toggle flags in the Aura control plane to see Dark Mode, AI Copilot, Fast Checkout, and banners react dynamically in real-time.
-    </p>
-
-    <!-- 5. Active Flags Live Ticker -->
-    <div class="flags-ticker-bar">
-      <div class="ticker-title">Active Aura Flags:</div>
-      <div id="ticker-flags-container" class="ticker-items">
-        <!-- Rendered dynamically by app.js -->
-        <span class="ticker-flag on">● dark-mode: ON</span>
-        <span class="ticker-flag on">● ai-copilot-beta: ON</span>
-        <span class="ticker-flag off">○ fast-checkout-v2: OFF</span>
+      <!-- Category Filter Pills -->
+      <div class="hero-filter-tabs">
+        <button class="filter-tab active" onclick="window.filterCategory('all', this)">All Hardware (6)</button>
+        <button class="filter-tab" onclick="window.filterCategory('Keyboards & Input', this)">Keyboards & Input</button>
+        <button class="filter-tab" onclick="window.filterCategory('Displays', this)">Displays</button>
+        <button class="filter-tab" onclick="window.filterCategory('Audio', this)">Audio</button>
+        <button class="filter-tab" onclick="window.filterCategory('Desk Accessories', this)">Accessories</button>
       </div>
     </div>
   </section>
 
-  <!-- 6. Main Products Grid -->
-  <main class="products-container">
-    <div id="products-grid" class="products-grid">
-      <!-- Injected by app.js -->
+  <!-- 4. Products Catalog Section -->
+  <main class="store-main">
+    <div class="main-container">
+      <div class="catalog-header">
+        <div>
+          <h2 class="catalog-title">Curated Hardware Collection</h2>
+          <p class="catalog-subtitle">Every piece is calibrated, CNC machined, and tested for high-throughput development.</p>
+        </div>
+        <div class="catalog-meta">
+          <span id="product-results-count">Showing 6 products</span>
+        </div>
+      </div>
+
+      <div id="products-grid" class="products-grid">
+        <!-- Injected dynamically by app.js -->
+      </div>
     </div>
   </main>
 
-  <!-- 7. Aura Feature Flag: Floating AI Copilot Widget -->
-  <div id="copilot-widget-container">
-    <!-- Chat Modal -->
-    <div id="copilot-modal" class="copilot-modal" style="display: none;">
-      <div class="copilot-header">
-        <div class="copilot-header-info">
-          <span style="font-size: 1.25rem;">🤖</span>
-          <div>
-            <div style="font-weight: 700; font-size: 0.9rem;">AI Shopping Copilot</div>
-            <div style="font-size: 0.7rem; opacity: 0.9;">Flag: ai-copilot-beta</div>
-          </div>
-        </div>
-        <button onclick="window.toggleCopilotModal()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.25rem;">✕</button>
+  <!-- 5. Slide-Out Shopping Cart Drawer -->
+  <div id="cart-overlay" class="drawer-overlay" onclick="window.closeCart()"></div>
+  <aside id="cart-drawer" class="cart-drawer" aria-labelledby="cart-title">
+    <div class="cart-drawer-header">
+      <div class="cart-drawer-title-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <h3 id="cart-title" class="cart-drawer-title">Shopping Bag</h3>
       </div>
-
-      <div id="copilot-chat-body" class="copilot-body">
-        <div class="chat-bubble bot">
-          👋 Hi! I'm your AI Shopping Assistant. How can I help you choose the right developer equipment today?
-        </div>
-        <div class="copilot-chips">
-          <button class="copilot-chip" onclick="window.sendCopilotQuery('Recommend a keyboard')">⌨️ Keyboards</button>
-          <button class="copilot-chip" onclick="window.sendCopilotQuery('What is Fast Checkout?')">⚡ Fast Checkout</button>
-          <button class="copilot-chip" onclick="window.sendCopilotQuery('Best monitor for coding')">🖥️ Monitors</button>
-        </div>
-      </div>
-
-      <div class="copilot-footer">
-        <input id="copilot-input-field" type="text" class="copilot-input" placeholder="Ask AI Copilot..." onkeydown="if(event.key==='Enter') window.sendCopilotQuery()">
-        <button class="btn-add-cart" onclick="window.sendCopilotQuery()">Send</button>
-      </div>
+      <button class="drawer-close-btn" onclick="window.closeCart()" aria-label="Close Cart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
 
-    <!-- Trigger Button -->
-    <button class="copilot-trigger-btn" onclick="window.toggleCopilotModal()" title="Open AI Copilot (Flag: ai-copilot-beta)">
-      <span style="font-size: 1.6rem;">🤖</span>
-    </button>
-  </div>
-
-  <!-- 8. Cart Drawer Modal -->
-  <div id="cart-overlay" class="cart-drawer-overlay" onclick="window.closeCart()"></div>
-  <aside id="cart-drawer" class="cart-drawer">
-    <div class="cart-header">
-      <h3 style="font-size: 1.15rem; font-weight: 700;">Shopping Cart</h3>
-      <button onclick="window.closeCart()" style="background: none; border: none; font-size: 1.25rem; color: var(--text-muted); cursor: pointer;">✕</button>
+    <!-- Cart Items List -->
+    <div id="cart-items" class="cart-items-container">
+      <!-- Injected dynamically by app.js -->
     </div>
 
-    <div id="cart-items" class="cart-items">
-      <!-- Injected by app.js -->
-    </div>
-
-    <div class="cart-footer">
-      <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">
-        <span>Total:</span>
-        <span id="cart-total-amount">$189.00</span>
+    <!-- Cart Footer & Checkout -->
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-table">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="cart-subtotal-amount">$229.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Express Shipping</span>
+          <span class="free-shipping">FREE</span>
+        </div>
+        <div class="summary-row total-row">
+          <span>Estimated Total</span>
+          <span id="cart-total-amount" class="total-amount">$229.00</span>
+        </div>
       </div>
 
-      <!-- Feature Flagged: Fast Checkout Button -->
+      <!-- Feature Flagged: 1-Click Fast Checkout Button (fast-checkout-v2) -->
       <button id="cart-fast-checkout-btn" class="btn-fast-checkout" onclick="window.triggerFastCheckout()">
-        ⚡ 1-Click Fast Checkout (Aura v2)
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span>Instant 1-Click Checkout</span>
       </button>
 
-      <button style="width: 100%; background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 0.75rem; border-radius: 8px; margin-top: 0.5rem; font-weight: 600; cursor: pointer;" onclick="alert('Standard checkout opened.')">
-        Standard Multi-Step Checkout
+      <!-- Standard Multi-Step Checkout -->
+      <button class="btn-standard-checkout" onclick="window.triggerStandardCheckout()">
+        <span>Standard Multi-Step Checkout</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
       </button>
     </div>
   </aside>
 
-  <!-- 9. Aura Live Inspector Dock (Panel Assessment Showcase) -->
-  <footer id="aura-inspector-dock" class="aura-inspector">
-    <div id="inspector-toggle-btn" class="aura-inspector-header">
-      <div style="display: flex; align-items: center; gap: 0.6rem;">
-        <span style="font-size: 1rem;">🔍</span>
-        <strong>Aura Platform Live Inspector</strong>
-        <span style="color: var(--text-muted); font-size: 0.75rem;">(Click to view raw evaluation payload & live stream logs)</span>
-      </div>
-      <span style="color: var(--primary); font-size: 0.75rem; font-weight: 600;">Toggle Payload ▴</span>
-    </div>
-
-    <div class="aura-inspector-content">
-      <div class="inspector-grid">
-        <div>
-          <div style="color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600; font-size: 0.7rem;">RAW EVALUATION PAYLOAD (GET /api/v1/evaluate):</div>
-          <pre id="inspector-payload" class="inspector-box">{ "dark-mode": true, "ai-copilot-beta": true, "fast-checkout-v2": false }</pre>
-        </div>
-        <div>
-          <div style="color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600; font-size: 0.7rem;">LIVE EVENT STREAM LOGS:</div>
-          <div id="inspector-logs" class="inspector-box">
-            <!-- Injected by app.js -->
+  <!-- 6. Floating AI Shopping Copilot (Flag: ai-copilot-beta) -->
+  <div id="copilot-widget-container" class="copilot-container">
+    <!-- Chat Dialog -->
+    <div id="copilot-modal" class="copilot-modal">
+      <div class="copilot-header">
+        <div class="copilot-header-left">
+          <div class="copilot-avatar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+              <circle cx="12" cy="5" r="2"></circle>
+              <path d="M12 7v4"></path>
+              <line x1="8" y1="16" x2="8" y2="16"></line>
+              <line x1="16" y1="16" x2="16" y2="16"></line>
+            </svg>
+          </div>
+          <div>
+            <h4 class="copilot-title">Nova AI Assistant</h4>
+            <span class="copilot-status">Online • Smart Recommendations</span>
           </div>
         </div>
+        <button class="copilot-close-btn" onclick="window.toggleCopilotModal()" aria-label="Close Chat">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div id="copilot-chat-body" class="copilot-body">
+        <div class="chat-bubble bot">
+          👋 Welcome to NovaStore. How can I assist with your workspace setup or hardware specifications today?
+        </div>
+        <div class="copilot-suggestions">
+          <button class="suggestion-chip" onclick="window.sendCopilotQuery('Recommend a mechanical keyboard for coding')">
+            ⌨️ Split Keyboard specs
+          </button>
+          <button class="suggestion-chip" onclick="window.sendCopilotQuery('Tell me about the 38 inch Curved Monitor')">
+            🖥️ 38" Curved Monitor
+          </button>
+          <button class="suggestion-chip" onclick="window.sendCopilotQuery('What are your shipping and warranty terms?')">
+            📦 Shipping & Returns
+          </button>
+        </div>
+      </div>
+
+      <div class="copilot-footer">
+        <input id="copilot-input-field" type="text" placeholder="Ask Nova AI..." onkeydown="if(event.key==='Enter') window.sendCopilotQuery()">
+        <button class="copilot-send-btn" onclick="window.sendCopilotQuery()" aria-label="Send Message">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Trigger Button -->
+    <button class="copilot-trigger" onclick="window.toggleCopilotModal()" aria-label="Open AI Assistant">
+      <div class="trigger-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </div>
+      <span class="trigger-label">Ask Nova AI</span>
+    </button>
+  </div>
+
+  <!-- 7. 1-Click User Profile & Persona Switcher Modal -->
+  <div id="login-overlay" class="modal-overlay" onclick="window.closeLoginModal()"></div>
+  <div id="user-login-modal" class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <div class="auth-modal-header">
+      <div>
+        <div class="auth-brand-badge">
+          <span>NOVA IDENTITY</span>
+        </div>
+        <h3 id="login-title" class="auth-modal-title">Sign In to NovaStore</h3>
+        <p class="auth-modal-subtitle">Select a predefined user profile below to sign in instantly with one click. No password required.</p>
+      </div>
+      <button class="modal-close-btn" onclick="window.closeLoginModal()" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="personas-list">
+      <!-- Persona 1: Alice Sterling (Staff) -->
+      <div class="persona-card" onclick="window.selectPersona('alice')">
+        <div class="persona-avatar-wrap">
+          <span class="persona-avatar">AS</span>
+        </div>
+        <div class="persona-info">
+          <div class="persona-name-row">
+            <h4 class="persona-name">Alice Sterling</h4>
+            <span class="persona-badge staff">Internal Staff</span>
+          </div>
+          <span class="persona-email">alice@aura.dev</span>
+          <p class="persona-desc">Senior Platform Architect. Matches <code>@aura.dev</code> internal company domain rules.</p>
+        </div>
+        <button class="btn-select-persona">Sign In</button>
+      </div>
+
+      <!-- Persona 2: Bob Chen (Enterprise) -->
+      <div class="persona-card" onclick="window.selectPersona('bob')">
+        <div class="persona-avatar-wrap">
+          <span class="persona-avatar">BC</span>
+        </div>
+        <div class="persona-info">
+          <div class="persona-name-row">
+            <h4 class="persona-name">Bob Chen</h4>
+            <span class="persona-badge enterprise">Enterprise Client</span>
+          </div>
+          <span class="persona-email">bob@company.com</span>
+          <p class="persona-desc">Engineering Director. Matches <code>@company.com</code> enterprise client domain rules.</p>
+        </div>
+        <button class="btn-select-persona">Sign In</button>
+      </div>
+
+      <!-- Persona 3: Charlie Vance (Beta Cohort) -->
+      <div class="persona-card" onclick="window.selectPersona('charlie')">
+        <div class="persona-avatar-wrap">
+          <span class="persona-avatar">CV</span>
+        </div>
+        <div class="persona-info">
+          <div class="persona-name-row">
+            <h4 class="persona-name">Charlie Vance</h4>
+            <span class="persona-badge beta">Beta Cohort</span>
+          </div>
+          <span class="persona-email">charlie@gmail.com</span>
+          <p class="persona-desc">Early Adopter & Hardware Builder. Enrolled in the private customer beta program.</p>
+        </div>
+        <button class="btn-select-persona">Sign In</button>
+      </div>
+
+      <!-- Persona 4: Diana Prince (Standard Shopper) -->
+      <div class="persona-card" onclick="window.selectPersona('diana')">
+        <div class="persona-avatar-wrap">
+          <span class="persona-avatar">DP</span>
+        </div>
+        <div class="persona-info">
+          <div class="persona-name-row">
+            <h4 class="persona-name">Diana Prince</h4>
+            <span class="persona-badge standard">Public Shopper</span>
+          </div>
+          <span class="persona-email">diana@startup.io</span>
+          <p class="persona-desc">General Customer. Evaluates against standard public percentage rollouts.</p>
+        </div>
+        <button class="btn-select-persona">Sign In</button>
+      </div>
+
+      <!-- Persona 5: Anonymous Guest -->
+      <div class="persona-card" onclick="window.selectPersona('anonymous')">
+        <div class="persona-avatar-wrap">
+          <span class="persona-avatar guest">G</span>
+        </div>
+        <div class="persona-info">
+          <div class="persona-name-row">
+            <h4 class="persona-name">Anonymous Visitor</h4>
+            <span class="persona-badge guest">Guest</span>
+          </div>
+          <span class="persona-email">Unauthenticated Session</span>
+          <p class="persona-desc">Evaluates standard public defaults with no user profile attributes.</p>
+        </div>
+        <button class="btn-select-persona">Continue as Guest</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Storefront Footer -->
+  <footer class="store-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="footer-brand">
+          <div class="logo-mark small">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            </svg>
+          </div>
+          <span class="footer-brand-name">NovaStore</span>
+        </div>
+        <p class="footer-tagline">Engineered hardware & tactile desktop peripherals for modern software builders.</p>
+      </div>
+      <div class="footer-right">
+        <span>© 2026 NovaStore Technologies, Inc. All rights reserved.</span>
       </div>
     </div>
   </footer>
