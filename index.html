@@ -17,22 +17,30 @@
   <!-- 2. Aura Live Control Header Bar -->
   <header class="aura-sync-bar">
     <div class="aura-sync-left">
-      <div class="aura-badge">
+      <div id="aura-connection-badge" class="aura-badge">
         <span class="pulse-dot"></span>
-        <span>Aura Connected</span>
+        <span id="aura-connection-text">SSE Stream Active (&lt;15ms)</span>
       </div>
       <span style="color: var(--text-muted); font-size: 0.75rem;">Project: <strong>Aura Platform Core</strong></span>
     </div>
 
     <div class="aura-sync-right">
+      <label for="aura-user-select" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">User Context:</label>
+      <select id="aura-user-select" class="env-select">
+        <option value="alice">Alice (usr_alice · @aura.dev)</option>
+        <option value="bob">Bob (usr_bob · @company.com)</option>
+        <option value="charlie">Charlie (usr_charlie · beta_user)</option>
+        <option value="anonymous">Anonymous Visitor</option>
+      </select>
+
       <label for="aura-env-select" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">Environment:</label>
       <select id="aura-env-select" class="env-select">
-        <option value="development">Development (Active)</option>
+        <option value="development">Development</option>
         <option value="staging">Staging</option>
         <option value="production">Production</option>
       </select>
       <button id="btn-manual-sync" class="btn-sync-refresh" title="Force re-evaluate flags">
-        <span>🔄 Sync Now</span>
+        <span>🔄 Sync</span>
       </button>
     </div>
   </header>

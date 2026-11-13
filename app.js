@@ -49,11 +49,31 @@ let cart = [
   { ...PRODUCTS[0], quantity: 1 }
 ];
 
-// Initialize Aura Client SDK
+const USER_PROFILES = {
+  alice: { userId: 'usr_alice', email: 'alice@aura.dev', attributes: { role: 'admin', tier: 'enterprise' } },
+  bob: { userId: 'usr_bob', email: 'bob@company.com', attributes: { role: 'editor', tier: 'pro' } },
+  charlie: { userId: 'usr_charlie', email: 'charlie@gmail.com', attributes: { role: 'viewer', betaUser: true } },
+  anonymous: { userId: null, email: null, attributes: {} }
+};
+
+// Detect deployment environment & URL overrides
+const urlParams = new URLSearchParams(window.location.search);
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const defaultEndpoint = isLocalhost
+  ? 'http://localhost:8080/api/v1/evaluate'
+  : 'https://aura-spring.onrender.com/api/v1/evaluate';
+
+const API_ENDPOINT = urlParams.get('endpoint') || defaultEndpoint;
+const API_KEY = urlParams.get('apiKey') || 'aura_pk_live_0093095c729447f9876683f353a7b9a1';
+const INITIAL_ENV = urlParams.get('env') || 'development';
+
+// Initialize Aura Client SDK with Real-Time SSE Stream and Context
 const aura = new AuraClient({
-  endpoint: 'http://localhost:8080/api/v1/evaluate',
-  apiKey: 'aura_pk_live_84543af8d688414f9be90d2581d3ecab',
-  environment: 'development',
+  endpoint: API_ENDPOINT,
+  apiKey: API_KEY,
+  environment: INITIAL_ENV,
+  context: USER_PROFILES.alice,
+  enableStream: true,
   pollIntervalMs: 2500
 });
 
@@ -188,7 +208,7 @@ window.triggerFastCheckout = (productId) => {
 };
 
 // Apply Aura Flags to UI
-function applyFeatureFlags({ flags, changedFlags, environment, isInitial }) {
+function applyFeatureFlags({ flags, changedFlags, environment, context, connectionMode, isInitial }) {
   // 1. Dark Mode Theme Flag
   const isDark = aura.isEnabled('dark-mode');
   document.body.classList.toggle('dark', isDark);
@@ -210,21 +230,32 @@ function applyFeatureFlags({ flags, changedFlags, environment, isInitial }) {
   // 5. Update Status Tickers
   updateTickers();
 
-  // 6. Update Inspector Payload
-  const rawPayloadEl = document.getElementById('inspector-payload');
-  if (rawPayloadEl) {
-    rawPayloadEl.innerText = JSON.stringify(flags, null, 2);
+  // 6. Update Connection Status Badge
+  const connText = document.getElementById('aura-connection-text');
+  if (connText) {
+    connText.innerText = connectionMode === 'stream'
+      ? 'SSE Stream Active (<15ms)'
+      : 'Polling Fallback (2500ms)';
   }
 
-  // 7. Log updates
+  // 7. Update Inspector Payload
+  const rawPayloadEl = document.getElementById('inspector-payload');
+  if (rawPayloadEl) {
+    rawPayloadEl.innerText = JSON.stringify({
+      flags,
+      context: context || aura.context,
+      mode: connectionMode || aura.connectionMode,
+      environment
+    }, null, 2);
+  }
+
+  // 8. Log updates
   if (changedFlags && Object.keys(changedFlags).length > 0) {
     for (const [key, change] of Object.entries(changedFlags)) {
-      addInspectorLog(`🚨 Flag change detected: '${key}' changed from ${change.from} -> ${change.to}`);
+      addInspectorLog(`⚡ Flag change received (<15ms): '${key}' ${change.from} -> ${change.to}`);
     }
   } else if (isInitial) {
-    addInspectorLog(`🟢 Connected to Aura Platform (${environment}): ${Object.keys(flags).length} flags evaluated.`);
-  } else {
-    // heartbeat
+    addInspectorLog(`🟢 Connected to Aura Platform (${environment}): ${Object.keys(flags).length} flags evaluated in mode [${connectionMode}].`);
   }
 }
 
@@ -288,8 +319,16 @@ window.addEventListener('DOMContentLoaded', () => {
     applyFeatureFlags(state);
   });
 
-  // Start real-time polling every 2.5s
-  aura.startPolling(2500);
+  // User Context Selector Change
+  const userSelect = document.getElementById('aura-user-select');
+  if (userSelect) {
+    userSelect.addEventListener('change', async (e) => {
+      const selectedKey = e.target.value;
+      const profile = USER_PROFILES[selectedKey] || USER_PROFILES.alice;
+      addInspectorLog(`👤 Switched Context: ${profile.userId || 'Anonymous'} (${profile.email || 'None'})`);
+      await aura.setContext(profile);
+    });
+  }
 
   // Environment Selector Change
   const envSelect = document.getElementById('aura-env-select');

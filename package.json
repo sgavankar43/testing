@@ -4,6 +4,7 @@
   "private": true,
   "description": "NovaStore - High-Performance Client Web Application powered by Aura Feature Flag Platform",
   "scripts": {
+    "build": "echo 'Static assets ready'",
     "start": "npx -y serve . -p 3000",
     "dev": "npx -y serve . -p 3000"
   },
