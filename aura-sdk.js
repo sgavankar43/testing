@@ -100,9 +100,9 @@ export class AuraClient {
       });
 
       this.eventSource.onerror = (err) => {
-        // If stream drops, fall back to polling while browser attempts reconnection
-        if (this.connectionMode === 'stream') {
-          console.warn('[AuraSDK] Stream interrupted, activating fallback polling...');
+        // If stream drops or fails to connect, fall back to polling while browser attempts reconnection
+        if (this.connectionMode !== 'polling') {
+          console.warn('[AuraSDK] Stream interrupted or connecting, activating fallback polling...');
           this.connectionMode = 'polling';
           this.startPolling(this.pollIntervalMs);
         }

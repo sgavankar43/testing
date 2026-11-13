@@ -58,10 +58,8 @@ const USER_PROFILES = {
 
 // Detect deployment environment & URL overrides
 const urlParams = new URLSearchParams(window.location.search);
-const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const defaultEndpoint = isLocalhost
-  ? 'http://localhost:8080/api/v1/evaluate'
-  : 'https://aura-spring.onrender.com/api/v1/evaluate';
+// Default to the live Render cloud backend so it works out-of-the-box everywhere (locally and when deployed)
+const defaultEndpoint = 'https://aura-spring.onrender.com/api/v1/evaluate';
 
 const API_ENDPOINT = urlParams.get('endpoint') || defaultEndpoint;
 const API_KEY = urlParams.get('apiKey') || 'aura_pk_live_0093095c729447f9876683f353a7b9a1';
@@ -319,6 +317,15 @@ window.addEventListener('DOMContentLoaded', () => {
     applyFeatureFlags(state);
   });
 
+  // Apply initial flag state immediately to prevent un-themed flash
+  applyFeatureFlags({
+    flags: aura.flags,
+    environment: aura.environment,
+    context: aura.context,
+    connectionMode: aura.connectionMode,
+    isInitial: true,
+  });
+
   // Backend Target Selector Change
   const backendSelect = document.getElementById('aura-target-backend');
   if (backendSelect) {
@@ -376,4 +383,15 @@ window.addEventListener('DOMContentLoaded', () => {
   renderProducts();
   renderCart();
   addInspectorLog('🚀 NovaStore initialized with Aura Feature Flag SDK.');
+
+  // Guarantee latest state from server immediately
+  aura.evaluate().then((flags) => {
+    applyFeatureFlags({
+      flags,
+      environment: aura.environment,
+      context: aura.context,
+      connectionMode: aura.connectionMode,
+      isInitial: true,
+    });
+  });
 });
