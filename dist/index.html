@@ -8,8 +8,31 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Immediate Synchronous Theme Hydration (Eliminates Refresh Lag & FOUC) -->
+  <script>
+    (function() {
+      let isDark = true;
+      try {
+        const cached = localStorage.getItem('aura_flags_cache');
+        if (cached) {
+          const flags = JSON.parse(cached);
+          if (flags['dark-mode'] === false) isDark = false;
+        }
+      } catch (e) {}
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
 </head>
-<body class="dark">
+<body>
+  <script>
+    if (document.documentElement.classList.contains('dark')) {
+      document.body.classList.add('dark');
+    }
+  </script>
 
   <!-- 1. Promotional Sale Banner (Flag: announcement-banner) -->
   <div id="announcement-banner" class="announcement-bar">

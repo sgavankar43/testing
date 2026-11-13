@@ -222,14 +222,12 @@ function renderProducts() {
           </button>
         </div>
 
-        ${isFastCheckoutEnabled ? `
-          <button class="btn-fast-checkout" onclick="window.triggerFastCheckout('${prod.id}')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-            </svg>
-            <span>Instant 1-Click Buy</span>
-          </button>
-        ` : ''}
+        <button class="btn-fast-checkout ${isFastCheckoutEnabled ? '' : 'hidden'}" onclick="window.triggerFastCheckout('${prod.id}')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          <span>Instant 1-Click Buy</span>
+        </button>
       </div>
     </article>
   `).join('');
@@ -299,8 +297,9 @@ function updateNavbarUser() {
 // Core Feature Flag Application (Sub-15ms Dynamic Reactivity)
 // ============================================================================
 function applyFeatureFlags(state) {
-  // 1. Dark Mode Theme Flag
+  // 1. Dark Mode Theme Flag (0ms instant toggle on root & body)
   const isDark = aura.isEnabled('dark-mode');
+  document.documentElement.classList.toggle('dark', isDark);
   document.body.classList.toggle('dark', isDark);
 
   // 2. Promotional Announcement Banner Flag
@@ -313,9 +312,22 @@ function applyFeatureFlags(state) {
   const copilotEl = document.getElementById('copilot-widget-container');
   if (copilotEl) copilotEl.classList.toggle('hidden', !isCopilot);
 
-  // 4. Products & Cart Fast Checkout
-  renderProducts();
-  renderCart();
+  // 4. Products & Cart Fast Checkout (direct DOM class toggle without innerHTML rebuild)
+  const isFast = aura.isEnabled('fast-checkout-v2');
+  const cartFastBtn = document.getElementById('cart-fast-checkout-btn');
+  if (cartFastBtn) cartFastBtn.classList.toggle('hidden', !isFast);
+
+  const fastButtons = document.querySelectorAll('.btn-fast-checkout');
+  if (fastButtons.length > 0) {
+    fastButtons.forEach(btn => btn.classList.toggle('hidden', !isFast));
+  } else {
+    renderProducts();
+  }
+
+  // Persist flags to localStorage cache
+  try {
+    localStorage.setItem('aura_flags_cache', JSON.stringify(aura.flags));
+  } catch (e) {}
 }
 
 // ============================================================================

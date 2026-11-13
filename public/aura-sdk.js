@@ -17,7 +17,15 @@ export class AuraClient {
       attributes: {}
     };
 
-    this.flags = options.defaultFlags || {
+    let cachedFlags = null;
+    try {
+      const saved = localStorage.getItem('aura_flags_cache');
+      if (saved) {
+        cachedFlags = JSON.parse(saved);
+      }
+    } catch (e) {}
+
+    this.flags = cachedFlags || options.defaultFlags || {
       'dark-mode': true,
       'ai-copilot-beta': true,
       'fast-checkout-v2': false,
@@ -145,6 +153,9 @@ export class AuraClient {
     }
 
     this.flags = { ...this.flags, ...newFlags };
+    try {
+      localStorage.setItem('aura_flags_cache', JSON.stringify(this.flags));
+    } catch (e) {}
     this.notify(changed, !hasChanges);
   }
 
