@@ -4,6 +4,7 @@
   "private": true,
   "description": "NovaStore - High-Performance Client Web Application powered by Aura Feature Flag Platform",
   "scripts": {
+    "build": "mkdir -p public dist && cp index.html app.js aura-sdk.js styles.css public/ && cp index.html app.js aura-sdk.js styles.css dist/",
     "start": "npx -y serve . -p 3000",
     "dev": "npx -y serve . -p 3000"
   },
