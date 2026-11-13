@@ -1,60 +1,54 @@
-# ⚡ NovaStore — Aura Feature Flag Client Test Application
+# ⚡ NovaStore — High-Performance Developer Hardware Store
 
-NovaStore is a modern developer hardware storefront application built to showcase real-time remote configuration and feature flagging using the **Aura Distributed Feature Flag Platform**.
+NovaStore is an authentic, engineering-grade hardware and peripherals storefront built with the **Hallmark Console Design System** and connected to the **Aura Distributed Feature Flag Platform**.
 
 ---
 
-## 🚀 Live Feature Flags Demonstrated
+## 💎 Design & Engineering Standards
 
-| Feature Flag Key | Type | Description | Effect on NovaStore |
+- **Aesthetic:** Hallmark Console engineering design (warm graphite dark mode `#0f1115`, paper light `#f9fafb`, amber human action accents `#f59e0b`).
+- **Authentic UX:** 100% genuine e-commerce experience with zero testing banners, demo badges, or debug inspector clutter.
+- **1-Click Predefined Persona Login:** Instant, zero-password user switcher supporting internal staff (`@aura.dev`), enterprise directors (`@company.com`), beta cohort members, standard shoppers, and anonymous guests.
+- **Sub-15ms Dynamic Reactivity:** Powered by Aura's Server-Sent Events (SSE) streaming and MurmurHash3 in-memory evaluation.
+
+---
+
+## 🚀 Live Feature Flags & Controls
+
+| Feature Flag Key | Type | Description | Storefront Property |
 | :--- | :--- | :--- | :--- |
-| `dark-mode` | Boolean | UI Theme Control | Dynamically switches theme between Light Mode and Dark Mode in real-time. |
-| `ai-copilot-beta` | Boolean | Interactive AI Shopping Assistant | Toggles the floating AI Copilot widget and intelligent recommendation dialog. |
-| `fast-checkout-v2` | Boolean | Accelerated 1-Click Checkout | Enables 1-Click Apple Pay / Google Pay simulated instant checkout button. |
-| `announcement-banner` | Boolean | Global Marketing Announcement | Controls top flash sale promo bar. |
+| `dark-mode` | Boolean | Hallmark Theme Control | Dynamically toggles between warm graphite dark mode and paper light mode. |
+| `announcement-banner` | Boolean | Global Promotional Banner | Controls the top Spring Architecture Event promotional banner. |
+| `ai-copilot-beta` | Boolean | AI Shopping Assistant | Toggles the floating Nova AI shopping assistant widget and recommendation drawer. |
+| `fast-checkout-v2` | Boolean | 1-Click Accelerated Purchase | Enables instant 1-click checkout on product cards and in the slide-out cart bag. |
 
 ---
 
-## 🔌 Aura SDK Integration
+## 👤 Predefined User Personas (1-Click Login)
 
-NovaStore uses `aura-sdk.js` to evaluate flags from the Aura Platform:
+Access the User Persona Switcher from the top-right navbar pill to test user segmentation and targeting rules:
 
-```javascript
-import { AuraClient } from './aura-sdk.js';
+1. **Alice Sterling** (`usr_alice` · `alice@aura.dev`) — Senior Platform Architect (matches internal `@aura.dev` company rules).
+2. **Bob Chen** (`usr_bob` · `bob@company.com`) — Engineering Director (matches enterprise client `@company.com` rules).
+3. **Charlie Vance** (`usr_charlie` · `charlie@gmail.com`) — Early Adopter (enrolled in the private customer beta program).
+4. **Diana Prince** (`usr_diana` · `diana@startup.io`) — General Customer (evaluates against standard percentage rollouts).
+5. **Guest Visitor** (`usr_guest` · Unauthenticated) — Standard anonymous visitor.
 
-const aura = new AuraClient({
-  endpoint: 'http://localhost:8080/api/v1/evaluate',
-  apiKey: 'aura_pk_live_84543af8d688414f9be90d2581d3ecab',
-  environment: 'development',
-  pollIntervalMs: 2500
-});
+---
 
-// React to live changes
-aura.onUpdate(({ flags, changedFlags, environment }) => {
-  document.body.classList.toggle('dark', aura.isEnabled('dark-mode'));
-  // Update other dynamic components...
-});
-```
+## 🌿 Dedicated Feature Branches
+
+Each feature flag is maintained on its own separate branch in this repository:
+- `main`: Core production storefront baseline.
+- `feature/dark-mode`: Hallmark warm graphite theme system and reactive theme application.
+- `feature/ai-copilot-beta`: Nova AI shopping assistant widget and recommendation engine.
+- `feature/fast-checkout-v2`: 1-Click accelerated checkout on product cards and shopping bag.
 
 ---
 
 ## 🏃‍♂️ How to Run Locally
 
-### Option 1: Using npm (Port 3000)
 ```bash
 npm start
-# or
-npm run dev
+# Server runs on http://localhost:3000
 ```
-
-### Option 2: Direct Browser Opening
-Simply double-click or open `index.html` in Google Chrome or any modern browser!
-
----
-
-## 🌿 Git Branches & Feature Links
-
-This repository is connected to Aura's GitHub integration module:
-- `main`: Stable production storefront baseline.
-- `feature/fast-checkout-v2`: Accelerated checkout feature branch linked in Aura.
-- `feature/ai-copilot-beta`: AI Shopping Copilot assistant feature branch.
